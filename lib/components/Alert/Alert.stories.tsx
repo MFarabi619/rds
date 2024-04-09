@@ -1,5 +1,8 @@
+import { expect } from '@storybook/jest'
 import { Meta, StoryObj } from '@storybook/react'
 import { Alert } from './Alert'
+import React from 'react'
+import { within } from '@storybook/testing-library'
 
 const meta: Meta<typeof Alert> = {
   title: 'Components/Alert',
@@ -54,6 +57,10 @@ export const Default: Story = {
   render: (args) => (
     <Alert key={111} type={args.type} textSize={args.textSize} title="Title" content="Content goes here" />
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByText('Content goes here')).toBeInTheDocument()
+  },
 }
 
 Default.args = {
