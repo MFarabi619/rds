@@ -1,4 +1,6 @@
 import type { StorybookConfig } from '@storybook/react-vite'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config()
 
 const config: StorybookConfig = {
   stories: [
@@ -23,5 +25,9 @@ const config: StorybookConfig = {
   docs: {
     autodocs: 'tag',
   },
+  env: (config) => ({
+    ...config,
+    GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY!,
+  }),
 }
 export default config
