@@ -22,9 +22,11 @@
     "noFallthroughCasesInSwitch": true,
 
     /*cypress*/
-    "types": ["cypress"]
+    "types": ["cypress"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   },
-  "include": ["lib"],
+  "include": ["lib", "cypress"],
   "exclude": ["./lib/**/*.stories.*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
