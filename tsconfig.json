@@ -26,7 +26,7 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
   },
-  "include": ["lib", "cypress"],
+  "include": ["lib", "cypress", "node_modules/@cypress/react/types/index.d.ts"],
   "exclude": ["./lib/**/*.stories.*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
