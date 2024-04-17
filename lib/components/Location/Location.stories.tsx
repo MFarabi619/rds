@@ -14,7 +14,7 @@ const meta: Meta<typeof Location> = {
   },
   decorators: [
     (Story) => (
-      <LoadScript googleMapsApiKey="AIzaSyAayPTQk0_rNbCa8Zbhlbn6BpHwcSrVNOc">
+      <LoadScript googleMapsApiKey="apikey">
         <Story />
       </LoadScript>
     ),

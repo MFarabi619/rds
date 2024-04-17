@@ -19,14 +19,9 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-
-    /*cypress*/
-    "types": ["cypress"],
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["lib", "cypress", "node_modules/@cypress/react/types/index.d.ts"],
+  "include": ["lib"],
   "exclude": ["./lib/**/*.stories.*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
