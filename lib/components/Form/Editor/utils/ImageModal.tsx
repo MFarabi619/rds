@@ -33,7 +33,6 @@ export const ImageModal = ({
   const [altText, setAltText] = useState(node ? node.getAltText() : '')
   const [altTextError, setAltTextError] = useState(false)
   const [position, setPosition] = useState<Position>(node ? node.getPosition() : 'full')
-  const [showCaption, setShowCaption] = useState(node ? node.getShowCaption() : false)
   const [caption, setCaption] = useState(node ? node.getCaption() : '')
   const [width, setWidth] = useState<number | string>(node ? node.__width : 0)
   const [height, setHeight] = useState<number | string>(node ? node.__height : 0)
@@ -111,10 +110,6 @@ export const ImageModal = ({
     setPosition(e.target.value as Position)
   }
 
-  const handleShowCaptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setShowCaption(e.target.checked)
-  }
-
   const handleCaptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCaption(e.target.value)
   }
@@ -140,7 +135,6 @@ export const ImageModal = ({
           const payload = {
             altText,
             height: parsedHeight,
-            showCaption,
             src: imageURL,
             width: parsedWidth,
             position,
@@ -183,7 +177,6 @@ export const ImageModal = ({
         AWSImageContextData.addImage(imageSrc)
         node.setSrc(imageSrc)
         node.setAltText(altText)
-        node.setShowCaption(showCaption)
         node.setPosition(position)
         node.setCaption(caption)
       })
@@ -205,7 +198,6 @@ export const ImageModal = ({
     setAltText('')
     setAltTextError(false)
     setPosition('full')
-    setShowCaption(false)
     setCaption('')
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
@@ -265,31 +257,13 @@ export const ImageModal = ({
       </FieldGroup>
       <FieldGroup>
         <FieldControl
-          control="checkbox"
-          name="checkbox"
-          label="Show Caption"
-          options={[
-            {
-              label: 'Yes',
-              value: 'yes',
-            },
-          ]}
-          isInline
-          onChange={handleShowCaptionChange}
-          checked={showCaption}
+          control="textarea"
+          label="Caption"
+          placeholder="Descriptive caption text"
+          name="image-caption"
+          value={caption}
+          onChange={handleCaptionChange}
         />
-
-        {showCaption && (
-          <FieldControl
-            control="textarea"
-            required
-            label="Caption"
-            placeholder="Descriptive caption text"
-            name="image-caption"
-            value={caption}
-            onChange={handleCaptionChange}
-          />
-        )}
       </FieldGroup>
 
       <FieldGroup cols={2}>

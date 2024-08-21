@@ -60,13 +60,11 @@ export default function InlineImageComponent({
   src,
   altText,
   nodeKey,
-  showCaption,
   caption,
 }: {
   altText: string
   caption: string
   nodeKey: NodeKey
-  showCaption: boolean
   src: string
 }): JSX.Element {
   const imageRef = useRef<null | HTMLImageElement>(null)
@@ -111,12 +109,7 @@ export default function InlineImageComponent({
       const latestSelection = $getSelection()
       const buttonElem = buttonRef.current
       if (isSelected && $isNodeSelection(latestSelection) && latestSelection.getNodes().length === 1) {
-        if (showCaption) {
-          // Move focus into nested editor
-          $setSelection(null)
-          event.preventDefault()
-          return true
-        } else if (buttonElem !== null && buttonElem !== document.activeElement) {
+        if (buttonElem !== null && buttonElem !== document.activeElement) {
           event.preventDefault()
           buttonElem.focus()
           return true
@@ -124,7 +117,7 @@ export default function InlineImageComponent({
       }
       return false
     },
-    [isSelected, showCaption],
+    [isSelected],
   )
 
   const onEscape = useCallback(
@@ -239,7 +232,7 @@ export default function InlineImageComponent({
         )}
         <div className={`${isFocused ? `focused ${$isNodeSelection(selection) ? 'draggable' : ''}` : ''}  rounded-lg`}>
           <LazyImage className={`!my-2`} src={src} altText={altText} imageRef={imageRef} />
-          {showCaption && caption && <div className="image-wrapper__caption">{caption}</div>}
+          {caption && <div className="image-wrapper__caption">{caption}</div>}
         </div>
         {ModalOpen && (
           <ImageModal

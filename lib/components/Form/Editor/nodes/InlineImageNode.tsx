@@ -20,7 +20,6 @@ export interface InlineImagePayload {
   caption?: string
   height?: number
   key?: NodeKey
-  showCaption?: boolean
   src: string
   width?: number
   position?: Position
@@ -29,7 +28,6 @@ export interface InlineImagePayload {
 export interface UpdateInlineImagePayload {
   src?: string
   altText?: string
-  showCaption?: boolean
   position?: Position
   caption?: string
   width?: number | 'inherit'
@@ -50,7 +48,6 @@ export type SerializedInlineImageNode = Spread<
     altText: string
     caption: string
     height?: number | 'inherit'
-    showCaption: boolean
     src: string
     width?: number | 'inherit'
     position?: Position
@@ -63,7 +60,6 @@ export class InlineImageNode extends DecoratorNode<JSX.Element> {
   __altText: string
   __width: 'inherit' | number
   __height: 'inherit' | number
-  __showCaption: boolean
   __caption: string
   __position: Position
 
@@ -78,14 +74,13 @@ export class InlineImageNode extends DecoratorNode<JSX.Element> {
       node.__position,
       node.__width,
       node.__height,
-      node.__showCaption,
       node.__caption,
       node.__key,
     )
   }
 
   static importJSON(serializedNode: SerializedInlineImageNode): InlineImageNode {
-    const { altText, height, width, caption, src, showCaption, position } = serializedNode
+    const { altText, height, width, caption, src, position } = serializedNode
 
     const parsedHeight = typeof height === 'number' ? height : undefined
     const parsedWidth = typeof width === 'number' ? width : undefined
@@ -93,7 +88,6 @@ export class InlineImageNode extends DecoratorNode<JSX.Element> {
     const node = $createInlineImageNode({
       altText,
       height: parsedHeight,
-      showCaption,
       src,
       width: parsedWidth,
       position,
@@ -118,7 +112,6 @@ export class InlineImageNode extends DecoratorNode<JSX.Element> {
     position: Position,
     width?: 'inherit' | number,
     height?: 'inherit' | number,
-    showCaption?: boolean,
     caption?: string,
     key?: NodeKey,
   ) {
@@ -127,7 +120,6 @@ export class InlineImageNode extends DecoratorNode<JSX.Element> {
     this.__altText = altText
     this.__width = width || 'inherit'
     this.__height = height || 'inherit'
-    this.__showCaption = showCaption || false
     this.__caption = caption || ''
     this.__position = position
   }
@@ -160,7 +152,6 @@ export class InlineImageNode extends DecoratorNode<JSX.Element> {
       altText: this.getAltText(),
       caption: this.__caption,
       height: this.__height === 'inherit' ? 0 : this.__height,
-      showCaption: this.__showCaption,
       src: this.getSrc(),
       type: 'inline-image',
       version: 1,
@@ -202,15 +193,6 @@ export class InlineImageNode extends DecoratorNode<JSX.Element> {
     writable.__caption = caption
   }
 
-  getShowCaption(): boolean {
-    return this.__showCaption
-  }
-
-  setShowCaption(showCaption: boolean): void {
-    const writable = this.getWritable()
-    writable.__showCaption = showCaption
-  }
-
   getPosition(): Position {
     return this.__position
   }
@@ -222,15 +204,12 @@ export class InlineImageNode extends DecoratorNode<JSX.Element> {
 
   update(payload: UpdateInlineImagePayload): void {
     const writable = this.getWritable()
-    const { src, altText, showCaption, position, caption } = payload
+    const { src, altText, position, caption } = payload
     if (src !== undefined) {
       writable.__src = src
     }
     if (altText !== undefined) {
       writable.__altText = altText
-    }
-    if (showCaption !== undefined) {
-      writable.__showCaption = showCaption
     }
     if (caption !== undefined) {
       writable.__caption = caption
@@ -280,7 +259,6 @@ export class InlineImageNode extends DecoratorNode<JSX.Element> {
           src={this.__src}
           altText={this.__altText}
           nodeKey={this.getKey()}
-          showCaption={this.__showCaption}
           caption={this.__caption}
         />
       </Suspense>
@@ -294,11 +272,10 @@ export function $createInlineImageNode({
   height,
   src,
   width,
-  showCaption,
   caption,
   key,
 }: InlineImagePayload): InlineImageNode {
-  return $applyNodeReplacement(new InlineImageNode(src, altText, position, width, height, showCaption, caption, key))
+  return $applyNodeReplacement(new InlineImageNode(src, altText, position, width, height, caption, key))
 }
 
 export function $isInlineImageNode(node: LexicalNode | null | undefined): node is InlineImageNode {
