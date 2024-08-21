@@ -28,7 +28,7 @@ export const ImageModal = ({
   const node = nodeKey ? editorState.read(() => $getNodeByKey(nodeKey) as InlineImageNode) : null
   const [src, setSrc] = useState(node ? node.getSrc() : '')
   const [srcError, setSrcError] = useState<boolean>(false)
-  // const [displayWarning, setDisplayWarning] = useState<boolean>(false)
+  const [sizeError, setSizeError] = useState<boolean>(false)
   const [file, setFile] = useState<File | null>(null)
   const [altText, setAltText] = useState(node ? node.getAltText() : '')
   const [altTextError, setAltTextError] = useState(false)
@@ -36,7 +36,7 @@ export const ImageModal = ({
   const [caption, setCaption] = useState(node ? node.getCaption() : '')
   const [width, setWidth] = useState<number | string>(node ? node.__width : 0)
   const [height, setHeight] = useState<number | string>(node ? node.__height : 0)
-  const [size, setSize] = useState<string>('medium')
+  const [size, setSize] = useState<string>('')
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -62,13 +62,11 @@ export const ImageModal = ({
             const imageWidth = img.width
             const imageHeight = img.height
 
-            console.log(imageWidth, 'imageWidth')
-
-            // if (imageWidth > 1024) {
-            //   setDisplayWarning(true)
-            // } else {
-            //   setDisplayWarning(false)
-            // }
+            if (imageWidth > 1024) {
+              setSizeError(true)
+            } else {
+              setSizeError(false)
+            }
 
             setWidth(imageWidth)
             setHeight(imageHeight)
@@ -211,6 +209,7 @@ export const ImageModal = ({
   ]
 
   const selectSizes = [
+    { value: '', label: '--' },
     { value: 'small', label: 'Small' },
     { value: 'medium', label: 'Medium' },
     { value: 'large', label: 'Large' },
@@ -224,24 +223,26 @@ export const ImageModal = ({
       ariaDescription="A modal to add the image"
     >
       <FieldGroup>
-        <FieldControl
-          control="fileUpload"
-          label="Image Upload"
-          required
-          name="inline-img"
-          onChange={handleImageChange}
-          refs={fileInputRef}
-          setFieldValue={false}
-          preview={src ? [src] : null}
-          handleOnDelete={() => {
-            setSrc('')
-            setFile(null)
-            setSrcError(true)
-          }}
-        />
+        <div>
+          <FieldControl
+            control="fileUpload"
+            label="Image Upload"
+            required
+            name="inline-img"
+            onChange={handleImageChange}
+            refs={fileInputRef}
+            setFieldValue={false}
+            preview={src ? [src] : null}
+            handleOnDelete={() => {
+              setSrc('')
+              setFile(null)
+              setSrcError(true)
+            }}
+          />
 
-        {srcError && <Error>Please choose an image</Error>}
-        {/* {displayWarning && <Error>Please select size first</Error>} */}
+          {srcError && <Error>Please choose an image</Error>}
+          {sizeError && <Error>Please select size</Error>}
+        </div>
       </FieldGroup>
       <FieldGroup>
         <FieldControl
@@ -284,6 +285,13 @@ export const ImageModal = ({
           name="size"
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
             setSize(e.target.value)
+            if (Number(width) > 1024) {
+              if (e.target.value) {
+                setSizeError(false)
+              } else {
+                setSizeError(true)
+              }
+            }
           }}
         />
       </FieldGroup>
