@@ -27,7 +27,8 @@ export const ImageModal = ({
   const editorState = activeEditor.getEditorState()
   const node = nodeKey ? editorState.read(() => $getNodeByKey(nodeKey) as InlineImageNode) : null
   const [src, setSrc] = useState(node ? node.getSrc() : '')
-  const [srcError, setSrcError] = useState(false)
+  const [srcError, setSrcError] = useState<boolean>(false)
+  // const [displayWarning, setDisplayWarning] = useState<boolean>(false)
   const [file, setFile] = useState<File | null>(null)
   const [altText, setAltText] = useState(node ? node.getAltText() : '')
   const [altTextError, setAltTextError] = useState(false)
@@ -36,6 +37,7 @@ export const ImageModal = ({
   const [caption, setCaption] = useState(node ? node.getCaption() : '')
   const [width, setWidth] = useState<number | string>(node ? node.__width : 0)
   const [height, setHeight] = useState<number | string>(node ? node.__height : 0)
+  const [size, setSize] = useState<string>('medium')
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -60,6 +62,14 @@ export const ImageModal = ({
           img.onload = () => {
             const imageWidth = img.width
             const imageHeight = img.height
+
+            console.log(imageWidth, 'imageWidth')
+
+            // if (imageWidth > 1024) {
+            //   setDisplayWarning(true)
+            // } else {
+            //   setDisplayWarning(false)
+            // }
 
             setWidth(imageWidth)
             setHeight(imageHeight)
@@ -208,6 +218,12 @@ export const ImageModal = ({
     { value: 'right', label: 'Right' },
   ]
 
+  const selectSizes = [
+    { value: 'small', label: 'Small' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'large', label: 'Large' },
+  ]
+
   return (
     <Modal
       isOpen={triggerModalOpen}
@@ -233,6 +249,9 @@ export const ImageModal = ({
         />
 
         {srcError && <Error>Please choose an image</Error>}
+        {/* {displayWarning && <Error>Please select size first</Error>} */}
+      </FieldGroup>
+      <FieldGroup>
         <FieldControl
           control="text"
           required
@@ -243,14 +262,8 @@ export const ImageModal = ({
           onChange={handleAltChange}
         />
         {altTextError && <Error>Please add alternative text</Error>}
-        <FieldControl
-          control="select"
-          label="Position"
-          options={selectValues}
-          value={position}
-          name="image-position"
-          onChange={handlePositionChange}
-        />
+      </FieldGroup>
+      <FieldGroup>
         <FieldControl
           control="checkbox"
           name="checkbox"
@@ -277,16 +290,38 @@ export const ImageModal = ({
             onChange={handleCaptionChange}
           />
         )}
-
-        <ButtonGroup align="end">
-          {node ? (
-            <Button title="Confirm" isDisabled={!src || !altText} onClick={handleOnConfirm}></Button>
-          ) : (
-            <Button title="Insert" isDisabled={!src || !altText} onClick={handleInsertOnClick}></Button>
-          )}
-          <Button color={'grey'} title="Cancel" onClick={handleCancelOnClick}></Button>
-        </ButtonGroup>
       </FieldGroup>
+
+      <FieldGroup cols={2}>
+        <FieldControl
+          control="select"
+          label="Position"
+          options={selectValues}
+          value={position}
+          name="image-position"
+          onChange={handlePositionChange}
+        />
+
+        <FieldControl
+          control="select"
+          label="Size"
+          options={selectSizes}
+          value={size}
+          name="size"
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+            setSize(e.target.value)
+          }}
+        />
+      </FieldGroup>
+
+      <ButtonGroup align="end">
+        {node ? (
+          <Button title="Confirm" isDisabled={!src || !altText} onClick={handleOnConfirm}></Button>
+        ) : (
+          <Button title="Insert" isDisabled={!src || !altText} onClick={handleInsertOnClick}></Button>
+        )}
+        <Button color={'grey'} title="Cancel" onClick={handleCancelOnClick}></Button>
+      </ButtonGroup>
     </Modal>
   )
 }
