@@ -1,6 +1,6 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-import { region, bucket, accessKeyId, secretAccessKey } from './helper'
+import { client } from './helper'
 
 /**
  * Generates a presigned URL for uploading an image file to AWS S3.
@@ -11,18 +11,15 @@ import { region, bucket, accessKeyId, secretAccessKey } from './helper'
  * @returns {Promise<string>} - A promise that resolves to a presigned URL that can be used to upload the image to AWS S3.
  */
 export const getPresignedImageURL = (contentType: string, fileName: string, expiration = 1000) => {
-  const client = new S3Client({
-    region,
-    credentials: {
-      accessKeyId,
-      secretAccessKey,
-    },
-  })
+  const bucket = import.meta.env.VITE_S3_BUCKET
+
   const command = new PutObjectCommand({
     Bucket: bucket,
     Key: fileName,
     ContentType: contentType,
   })
+
+  console.log(bucket, 'ASd')
   return getSignedUrl(client, command, { expiresIn: expiration })
 }
 
@@ -37,6 +34,9 @@ export const getPresignedImageURL = (contentType: string, fileName: string, expi
  */
 export const uploadPresignedImage = async (file: File, preSignedUrl: string, fileName: string): Promise<string> => {
   const { type } = file
+
+  const bucket = import.meta.env.VITE_S3_BUCKET
+  const region = import.meta.env.VITE_AWS_REGION
 
   try {
     const response = await fetch(preSignedUrl, {

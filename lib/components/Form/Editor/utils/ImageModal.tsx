@@ -10,7 +10,7 @@ import Error from '../../Error/Error'
 import FieldGroup from '../../FieldGroup/FieldGroup'
 import { $getNodeByKey } from 'lexical'
 import { InlineImageNode } from '../nodes/InlineImageNode'
-import { uploadImage } from '../../../../utils/AWS'
+import { upload } from '../../../../utils/AWS'
 import { useAWSImages } from '../context/useAWSImages'
 
 export const ImageModal = ({
@@ -119,7 +119,7 @@ export const ImageModal = ({
       setAltTextError(false)
       if (file) {
         try {
-          const imageURL = await uploadImage(file)
+          const imageURL = await upload(file)
 
           setSrc(imageURL)
 
@@ -160,7 +160,7 @@ export const ImageModal = ({
       let imageSrc = src
       if (file) {
         try {
-          imageSrc = await uploadImage(file)
+          imageSrc = await upload(file)
         } catch (error) {
           console.error('Error uploading image:', error)
           return

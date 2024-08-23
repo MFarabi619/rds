@@ -10,7 +10,7 @@ import { uploadPresignedImage, getPresignedImageURL } from './presigned'
  * @returns {Promise<string>} - A promise that resolves to the uploaded image's URL if `uploadToAWS` is true, or the presigned URL if `uploadToAWS` is false.
  * @throws {Error} - Throws an error if the presigned URL generation or the image upload fails.
  */
-export const uploadImage = async (file: File, uploadToAWS: boolean = true): Promise<string> => {
+export const upload = async (file: File, uploadToAWS: boolean = true): Promise<string> => {
   const { name, type } = file
 
   const fileNameWithoutExtension = name.split('.').slice(0, -1).join('.')
