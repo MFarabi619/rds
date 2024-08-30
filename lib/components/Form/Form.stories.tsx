@@ -657,6 +657,22 @@ export const AutoSuggest: Story = () => {
     <Form formikProps={formikProps}>
       <Form.FieldGroup>
         <Form.FieldControl
+          control="text"
+          label="Text"
+          name="text"
+          placeholder="Placeholder"
+          disabled={true}
+          options={AutoSuggestData}
+        />
+        <Form.FieldControl
+          control="autosuggest"
+          label="Text"
+          name="text"
+          placeholder="Placeholder"
+          disabled={true}
+          options={AutoSuggestData}
+        />
+        <Form.FieldControl
           control="autosuggest"
           label="Text"
           name="text"
